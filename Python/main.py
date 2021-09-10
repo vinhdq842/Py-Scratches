@@ -12,17 +12,17 @@ Optimization
 
 def f(a):
     x, y = a[0], a[1]
-    return 100 * (y - x ** 2) ** 2 + (1 - x) ** 2
+    return x**4 + y**4 -4*x*y + 1
 
 
 def grad_f(a):
     x, y = a[0], a[1]
-    return np.array([-400 * x * (y - x ** 2) - 2 * (1 - x), 200 * (y - x ** 2)])
+    return np.array([4*x**3-4*y, 4*y**3-4*x])
 
 
 def hesse_f(a):
     x, y = a[0], a[1]
-    return np.array([[-400 * (y - x ** 2) + 800 * x ** 2 + 2, -400 * x], [-400 * x, 200]])
+    return np.array([[12*x**2, -4], [-4, 12*y**2]])
 
 
 def euclidean_norm_sqr(a):
@@ -31,8 +31,8 @@ def euclidean_norm_sqr(a):
 
 # Số bước lặp tối đa mặc định là 1000
 def grad_descent_backtracking_line_search(x, num_iter=1000):
-    t = 1
-    alpha = 0.3
+    t = 0.5
+    alpha = 0.2
     beta = 0.5
     epsilon = 10 ** -4
     start = time.time()
@@ -44,7 +44,6 @@ def grad_descent_backtracking_line_search(x, num_iter=1000):
 
         x -= t * grad_f(x)
         i += 1
-
     return time.time() - start, x, grad_f(x), i, sqrt(euclidean_norm_sqr(x))
 
 
@@ -77,9 +76,9 @@ def newton_backtracking_line_search(x, num_iter=1000):
 
 
 print("====== Gradient descent with backtracking line search ======")
-x0 = np.array([1.2, 1.2])
+x0 = np.array([.8, .8])
 print("Starting point: (%.2f,%.2f)" % (x0[0], x0[1]))
-rs = grad_descent_backtracking_line_search(x0, 50000)
+rs = grad_descent_backtracking_line_search(x0, 0)
 print("Number of iterations: %s" % rs[3])
 print("Time elapsed: %s" % rs[0])
 print("Approximated stationary point: %s" % rs[1])
